@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athena Institute of Technology — AI Knowledge System</title>
+  <meta name="description" content="The institutional knowledge engine for Athena Institute of Technology — RAG-powered AI assistant for admissions, programs, campus life, and placements.">
+  <meta name="theme-color" content="#0a0a0a">
+  <!-- Inter Variable from Google Fonts (matches Linear's exact typeface) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2216%22 fill=%22%237170ff%22/><text y=%22.85em%22 x=%2250%22 font-size=%2264%22 text-anchor=%22middle%22 fill=%22white%22>A</text></svg>">
+</head>
+<body>
+
+<!-- ============================================================
+     STICKY NAV
+     Inspo pattern: "logo left, center links, right: login + pill CTA"
+     Linear autopsy: "pill 'Sign up' with gold #e9d890 border"
+     ============================================================ -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+
+    <!-- Logo (left) -->
+    <a href="/" class="nav-logo" aria-label="Athena Institute Home">
+      <div class="nav-logo-mark" aria-hidden="true">A</div>
+      <span class="nav-logo-text">Athena Institute</span>
+    </a>
+
+    <!-- Center nav links -->
+    <ul class="nav-links" role="list">
+      <li><a href="#console" class="nav-link">Console</a></li>
+      <li><a href="#architecture" class="nav-link">Architecture</a></li>
+      <li><a href="#metrics" class="nav-link">Metrics</a></li>
+    </ul>
+
+    <!-- Right actions -->
+    <div class="nav-right">
+      <div class="status-badge" role="status" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>System Online</span>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<main>
+
+  <!-- ============================================================
+       HERO (Specimen macrostructure)
+       Inspo autopsy: "H1 left-aligned, 3 lines, sentence case, massive scale.
+       Subhead below. No CTA button. Hero visual bleeds to edges."
+       Builder.io reference: monospace badge as eyebrow above headline
+       ============================================================ -->
+  <section class="hero" aria-labelledby="hero-heading">
+
+    <!-- Eyebrow link (Inspo Linear: "★ Issue tracking is dead  linear.app/next →") -->
+    <a href="#console" class="hero-eyebrow" id="hero-eyebrow-link">
+      <span class="hero-eyebrow-dot" aria-hidden="true"></span>
+      <span>Admissions 2026–27 now open — Explore programs</span>
+      <span class="hero-eyebrow-arrow" aria-hidden="true">→</span>
+    </a>
+
+    <!-- H1: massive, left-aligned, 3 lines, sentence case -->
+    <h1 class="hero-h1" id="hero-heading">
+      The Institutional<br>
+      knowledge system<br>
+      for Athena Institute
+    </h1>
+
+    <!-- Subhead: lighter, smaller, same left-align -->
+    <p class="hero-sub">
+      Purpose-built for students, staff, and agents. Ask about admissions, programs, research, placements, and campus life. Designed for the AI era.
+    </p>
+
+    <!-- Topic chips (shortcut actions to scroll to console + pre-fill queries) -->
+    <nav class="hero-actions" aria-label="Quick topics">
+      <button class="chip" id="chip-programs" data-query="What B.Tech and M.Tech programs are offered at Athena Institute?" type="button">
+        <span class="chip-tag">[prog]</span> Programs &amp; Specializations
+      </button>
+      <button class="chip" id="chip-admissions" data-query="What are the admission criteria, eligibility, and entrance exams required?" type="button">
+        <span class="chip-tag">[adm]</span> Admissions &amp; Cutoffs
+      </button>
+      <button class="chip" id="chip-fees" data-query="What are the tuition fees and available merit scholarships?" type="button">
+        <span class="chip-tag">[fee]</span> Fees &amp; Scholarships
+      </button>
+      <button class="chip" id="chip-placements" data-query="What are the recent placement statistics, top recruiters, and highest package?" type="button">
+        <span class="chip-tag">[plc]</span> Placements 2025
+      </button>
+      <button class="chip" id="chip-campus" data-query="Tell me about campus hostels, labs, and student facilities." type="button">
+        <span class="chip-tag">[cam]</span> Campus &amp; Hostels
+      </button>
+    </nav>
+
+  </section>
+
+  <!-- ============================================================
+       APP CONSOLE (Main specimen visual)
+       Inspo: Linear hero visual = actual product UI screenshot
+       Builder.io reference: dark terminal-style window chrome
+       ============================================================ -->
+  <section class="console-wrapper" id="console" aria-label="AI Chat Console">
+
+    <div class="console" role="region" aria-label="Athena RAG console">
+
+      <!-- Window chrome (titlebar) -->
+      <div class="console-bar">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="console-dots" aria-hidden="true">
+            <span class="console-dot console-dot-red"></span>
+            <span class="console-dot console-dot-yellow"></span>
+            <span class="console-dot console-dot-green"></span>
+          </div>
+          <div class="console-title-area">
+            <span class="console-title">Athena Knowledge Console</span>
+            <span class="console-tag" aria-label="Powered by LangGraph and ChromaDB">LangGraph · ChromaDB</span>
+          </div>
+        </div>
+        <div class="console-actions">
+          <div class="latency-tag" id="latencyTag" aria-live="polite" aria-label="Response latency">0ms</div>
+          <button class="console-btn" id="clearSessionBtn" type="button" title="Start a new session">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            </svg>
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages feed -->
+      <div class="console-feed" id="consoleFeed" role="log" aria-live="polite" aria-label="Chat messages">
+        <!-- Welcome message -->
+        <div class="msg-row ai" id="welcome-msg">
+          <div class="msg-avatar" aria-label="AI assistant avatar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" fill="currentColor" opacity="0.9"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.9"/>
+            </svg>
+          </div>
+          <div class="msg-body">
+            <div class="msg-meta">
+              <span>Athena Assistant</span>
+              <span aria-hidden="true">·</span>
+              <span>Now</span>
+            </div>
+            <div class="msg-bubble">
+              Welcome to <strong>Athena Institute of Technology</strong>. I'm your AI knowledge assistant — powered by our institutional RAG index and LangGraph orchestrator. Ask me anything about admissions, programs, faculty, campus, or placement records. Use the quick topics above or type below.
+            </div>
+          </div>
+        </div>
+
+        <!-- Typing indicator (hidden by default) -->
+        <div class="msg-row ai" id="typingIndicator" aria-label="Assistant is typing">
+          <div class="msg-avatar" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="3.5" fill="currentColor" opacity="0.9"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.9"/>
+            </svg>
+          </div>
+          <div class="msg-body">
+            <div class="typing-dots" aria-hidden="true">
+              <span class="tdot"></span>
+              <span class="tdot"></span>
+              <span class="tdot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input bar -->
+      <div class="console-input-bar">
+        <div class="input-row">
+          <textarea
+            id="chatInput"
+            class="chat-textarea"
+            rows="1"
+            placeholder="Ask about Athena Institute… (/ to focus, Enter to send)"
+            aria-label="Chat input"
+            autocomplete="off"
+            spellcheck="true"
+          ></textarea>
+          <button class="send-btn" id="sendBtn" type="button" title="Send (Enter)" aria-label="Send message">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+        <div class="input-hints">
+          <div class="kbd-cluster">
+            <span><kbd>Enter</kbd> send</span>
+            <span><kbd>Shift+Enter</kbd> newline</span>
+            <span><kbd>/</kbd> focus</span>
+            <span><kbd>Esc</kbd> clear</span>
+          </div>
+          <span>Connected · ChromaDB Cloud · Redis</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FEATURE TRIO
+       Inspo tag: "feature-trio" — 3 dark cards, clean hierarchy
+       ============================================================ -->
+  <section class="features" id="architecture" aria-labelledby="features-heading">
+    <div class="section-eyebrow">System architecture</div>
+    <h2 class="section-heading" id="features-heading">Built for precision institutional search</h2>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon" aria-hidden="true">⚡</div>
+        <h3 class="feature-title">LangGraph Orchestrator</h3>
+        <p class="feature-desc">
+          Detects query intent and dynamically routes: handles greetings directly, invokes the institutional vector search tool only when knowledge retrieval is required.
+        </p>
+        <div class="feature-mono-footer">
+          <span>Orchestration</span>
+          <span class="feature-mono-footer-status">
+            <span class="feature-mono-footer-dot"></span>
+            LangChain · ToolNode
+          </span>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" aria-hidden="true">🔍</div>
+        <h3 class="feature-title">Neural Vector Index</h3>
+        <p class="feature-desc">
+          Embeds academic handbooks, syllabi, and administrative documents into dense vector space. Cosine similarity retrieval with configurable relevance thresholds.
+        </p>
+        <div class="feature-mono-footer">
+          <span>Retrieval</span>
+          <span class="feature-mono-footer-status">
+            <span class="feature-mono-footer-dot"></span>
+            ChromaDB Cloud · OpenAI
+          </span>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" aria-hidden="true">💾</div>
+        <h3 class="feature-title">Stateful Session Memory</h3>
+        <p class="feature-desc">
+          Multi-turn conversation context persisted with async Redis. Automatic TTL-based expiry, per-session message trimming, and sub-millisecond serialization.
+        </p>
+        <div class="feature-mono-footer">
+          <span>Session store</span>
+          <span class="feature-mono-footer-status">
+            <span class="feature-mono-footer-dot"></span>
+            Async Redis · Cloud
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STAT STRIP
+       Inspo "stat" component — monospace values, divider grid
+       Gold accent on key metric (matches Linear gold status indicator)
+       ============================================================ -->
+  <section class="stats" id="metrics" aria-labelledby="stats-heading">
+    <h2 class="sr-only" id="stats-heading">Institute metrics</h2>
+    <div class="stat-strip" role="list">
+      <div class="stat-item" role="listitem">
+        <span class="stat-value accent-gold">95.4%</span>
+        <span class="stat-label">Placement Record</span>
+      </div>
+      <div class="stat-item" role="listitem">
+        <span class="stat-value">120+</span>
+        <span class="stat-label">Research Labs</span>
+      </div>
+      <div class="stat-item" role="listitem">
+        <span class="stat-value accent-purple">48 LPA</span>
+        <span class="stat-label">Highest Package</span>
+      </div>
+      <div class="stat-item" role="listitem">
+        <span class="stat-value">&lt; 350ms</span>
+        <span class="stat-label">RAG Latency</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <span class="footer-copy">© 2026 Athena Institute of Technology</span>
+    <nav class="footer-links" aria-label="Footer links">
+      <a href="https://inspomcp.dev/d/linear-app/DESIGN.md" target="_blank" rel="noopener" class="footer-link">Design System</a>
+      <a href="#console" class="footer-link">Back to top ↑</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Screen-reader only utility -->
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+<script src="/static/js/chatbot.js"></script>
+</body>
+</html>

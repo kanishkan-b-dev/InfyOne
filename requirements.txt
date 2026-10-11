@@ -1,0 +1,47 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Athena Institute AI Chatbot — Python Dependencies
+# Install: pip install -r requirements.txt
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ── Core Web Framework ────────────────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.12
+
+# ── Configuration & Validation ───────────────────────────────────────────────
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+python-dotenv>=1.0.0
+
+# ── LangChain Ecosystem ───────────────────────────────────────────────────────
+langchain>=0.3.10
+langchain-core>=0.3.25
+langchain-community>=0.3.10
+langchain-openai>=0.3.0
+langchain-chroma>=0.1.4
+langchain-text-splitters>=0.3.4
+
+# ── LangGraph (Workflow Orchestration) ───────────────────────────────────────
+langgraph>=0.2.50
+
+# ── Vector Database (ChromaDB) ────────────────────────────────────────────────
+# Supports local (embedded), HTTP (self-hosted), and Cloud modes
+chromadb>=0.5.0
+
+# ── Session State (Redis) ─────────────────────────────────────────────────────
+redis[asyncio]>=5.0.0
+
+# ── Document Loading ──────────────────────────────────────────────────────────
+pypdf>=4.0.0        # PDF files
+docx2txt>=0.8       # DOCX files
+# .txt and .md files are handled by LangChain's built-in TextLoader
+
+# ── HTTP Client (used internally by OpenAI SDK) ───────────────────────────────
+httpx>=0.27.0
+
+# ── Async Runtime ────────────────────────────────────────────────────────────
+anyio>=4.0.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=8.3.0
+pytest-asyncio>=0.24.0
