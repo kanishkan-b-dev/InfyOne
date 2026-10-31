@@ -1,0 +1,134 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# .gitignore — Athena Institute AI Chatbot
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ── Environment / Secrets ─────────────────────────────────────────────────────
+.env
+*.env
+.env.*
+!.env.example
+.flaskenv
+.secrets/
+secrets/
+secret/
+credentials/
+credential/
+*.credentials
+*.credentials.*
+credentials.json
+credentials.yaml
+credentials.yml
+secrets.json
+secrets.yaml
+secrets.yml
+*_secret.json
+*-secret.json
+*_secrets.*
+*-secrets.*
+service-account*.json
+*-service-account*.json
+*_service_account*.json
+firebase-adminsdk*.json
+
+# ── Private keys, certificates, and cloud credentials ─────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+.ssh/
+.aws/
+.azure/
+.gcloud/
+.config/gcloud/
+.kube/config
+
+# ── Local data and database files (may contain confidential records) ──────────
+data/private/
+private/
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.sql.gz
+*.bak.sql
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.pyo
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+MANIFEST
+
+# ── Virtual Environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.env.bak
+
+# ── ChromaDB Data (vector index — can be rebuilt via ingest.py) ───────────────
+chroma_data/
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+test-results/
+test_results*.json
+test_results*.txt
+
+# ── IDE / Editor ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+log/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+.dockerignore
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.temp
+.cache/
+tmp/
