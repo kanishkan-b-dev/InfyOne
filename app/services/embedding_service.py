@@ -28,11 +28,10 @@ class EmbeddingServiceV2:
     ):
         self.model_name = (
             model_name
-            or os.getenv("EMBEDDING_MODEL_V2")
             or os.getenv("EMBEDDING_MODEL")
             or "text-embedding-3-large"
         )
-        dim_env = os.getenv("EMBEDDING_DIMENSION_V2")
+        dim_env = os.getenv("EMBEDDING_DIMENSION") or os.getenv("EMBEDDING_DIMENSION_V2")
         self.dimensions = dimensions or (int(dim_env) if dim_env else 3072)
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.batch_size = batch_size

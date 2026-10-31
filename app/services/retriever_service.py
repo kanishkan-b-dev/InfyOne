@@ -1,6 +1,6 @@
 """
 V2 Retrieval Service.
-Implements multi-stage semantic retrieval using text-embedding-3-large over AthenaCollegeCollection_v2.
+Implements multi-stage semantic retrieval using text-embedding-3-large over InfyOne / Infosys collection.
 
 Architecture:
 1. Candidate Generation: Vector search using Chroma cosine distance.
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 STOP_WORDS = {
     "what", "when", "where", "which", "who", "whom", "whose", "why",
-    "how", "the", "and", "for", "ait", "athena", "institute", "technology",
+    "how", "the", "and", "for", "infyone", "infosys",
     "does", "can", "are", "about", "with", "from", "that", "this", "tell",
     "me", "is", "a", "an", "in", "to", "of", "do", "much"
 }

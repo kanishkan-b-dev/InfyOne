@@ -93,7 +93,7 @@ Redis                 ChromaDB
 | **RAG Components** | LangChain |
 | **Vector Database** | ChromaDB (persistent) |
 | **Session Memory** | Redis |
-| **LLM** | OpenAI GPT-4o-mini (or Azure OpenAI) |
+| **LLM** | OpenAI GPT-4o (or Azure OpenAI) |
 | **Embeddings** | OpenAI text-embedding-3-small |
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
 | **Config** | Pydantic Settings |

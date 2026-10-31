@@ -1,5 +1,5 @@
 """
-Structured logging setup for the Athena / Fitness AI Chatbot backend.
+Structured logging setup for the InfyOne AI Chatbot backend.
 Supports console & file logging with JSON or standard text formatting based on .env.
 """
 import json

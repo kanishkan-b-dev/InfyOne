@@ -1,5 +1,5 @@
 /**
- * Athena AI — Chatbot Client
+ * Infosys AI — Chatbot Client
  * Design system: Linear (Inspo MCP) — dark, minimal, technical
  * Handles: session management, API calls, markdown rendering,
  *          typing indicator, latency tracking, keyboard shortcuts
@@ -9,7 +9,7 @@
 
   // ── Config ──────────────────────────────────────────────────────────────
   const API_URL         = '/api/chat';
-  const SESSION_KEY     = 'athena_session_id';
+  const SESSION_KEY     = 'infosys_session_id';
 
   // ── State ────────────────────────────────────────────────────────────────
   let sessionId = localStorage.getItem(SESSION_KEY) || generateSessionId();
@@ -111,7 +111,7 @@
         <circle cx="12" cy="8" r="3.5" fill="currentColor" opacity="0.9"/>
         <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.9"/>
       </svg>`;
-      avatar.setAttribute('aria-label', 'Athena Assistant');
+      avatar.setAttribute('aria-label', 'InfyOne');
     } else {
       avatar.textContent = 'U';
       avatar.setAttribute('aria-hidden', 'true');
@@ -122,7 +122,7 @@
 
     const metaEl = document.createElement('div');
     metaEl.className = 'msg-meta';
-    metaEl.innerHTML = `<span>${role === 'user' ? 'You' : 'Athena Assistant'}</span><span aria-hidden="true">·</span><span>${now()}</span>`;
+    metaEl.innerHTML = `<span>${role === 'user' ? 'You' : 'InfyOne'}</span><span aria-hidden="true">·</span><span>${now()}</span>`;
 
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
@@ -136,24 +136,11 @@
       if (meta.toolUsed) {
         inner += `<div class="tool-badge" aria-label="RAG tool invoked">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          search_athena_knowledge_base
+          search_infyone_knowledge_base
         </div>`;
       }
 
       inner += renderMarkdown(content);
-
-      // Source citations
-      if (meta.sources && meta.sources.length > 0) {
-        const pills = meta.sources.map(s => {
-          const title = (s.source || s.metadata?.source || 'Document').replace(/^.*[/\\]/, '');
-          return `<span class="source-pill" title="${title}">📄 ${title}</span>`;
-        }).join('');
-        inner += `<div class="sources-block">
-          <div class="sources-label">Knowledge base citations</div>
-          <div class="sources-pills">${pills}</div>
-        </div>`;
-      }
-
       bubble.innerHTML = inner;
     }
 
@@ -193,8 +180,8 @@
         body: JSON.stringify({ message: text, session_id: sessionId }),
       });
 
-      const elapsed = Math.round(performance.now() - t0);
-      if (latencyTag) latencyTag.textContent = elapsed + 'ms';
+      const elapsed = (performance.now() - t0) / 1000;
+      if (latencyTag) latencyTag.textContent = elapsed.toFixed(2) + 's';
 
       hideTyping();
 
@@ -205,17 +192,22 @@
       }
 
       const data = await res.json();
-      const answer   = data.answer   || 'No response returned.';
-      const sources  = data.sources  || [];
-      // Show RAG badge when rewritten_query is present (implies tool was called)
-      const toolUsed = data.rewritten_query ? 'search_athena_knowledge_base' : null;
+      if (data.session_id) {
+        sessionId = data.session_id;
+        localStorage.setItem(SESSION_KEY, sessionId);
+      }
+      const answer = data.answer || 'No response returned.';
+      const sources = data.sources || [];
+      const toolUsed = (data.answering_node === 'generate_answer' || data.rewritten_query)
+        ? 'search_infosys_knowledge_base'
+        : null;
 
       appendMsg('ai', answer, { sources, toolUsed });
 
     } catch (err) {
       hideTyping();
       appendMsg('ai', `**Network error:** Cannot reach \`${API_URL}\`. Ensure the server is running.`);
-      console.error('[Athena] fetch error:', err);
+      console.error('[Infosys] fetch error:', err);
     } finally {
       busy = false;
       sendBtn.disabled = false;
@@ -258,7 +250,7 @@
   // Clear / reset session
   clearBtn?.addEventListener('click', () => {
     sessionId = generateSessionId();
-    if (latencyTag) latencyTag.textContent = '0ms';
+    if (latencyTag) latencyTag.textContent = '0.00s';
 
     // Remove all messages except welcome
     const welcome = document.getElementById('welcome-msg');
@@ -270,7 +262,7 @@
     if (welcome) {
       const bubble = welcome.querySelector('.msg-bubble');
       if (bubble) bubble.innerHTML =
-        'Session reset. New conversation started. How can I help you with <strong>Athena Institute of Technology</strong> today?';
+        'Session reset. New conversation started. How can I help you with <strong>Infosys</strong> today?';
       const metaEl = welcome.querySelector('.msg-meta span:last-child');
       if (metaEl) metaEl.textContent = now();
     }
@@ -290,7 +282,7 @@
   // Defer moving typing row to end of feed on init
   if (typingRow) feed.appendChild(typingRow);
 
-  console.info('%c⚡ Athena AI%c · Linear design system · LangGraph + ChromaDB',
+  console.info('%c⚡ Infosys AI%c · Linear design system · LangGraph + ChromaDB',
     'color:#7170ff;font-weight:700', 'color:#8a8f98;font-weight:400'
   );
 })();

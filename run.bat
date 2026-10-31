@@ -1,6 +1,6 @@
 @echo off
 REM ===========================================================================
-REM  Athena AI Chatbot - run.bat
+REM  InfyOne AI Chatbot - run.bat
 REM  Loads all variables from .env into the current terminal session,
 REM  then starts the FastAPI backend (which also serves the frontend).
 REM

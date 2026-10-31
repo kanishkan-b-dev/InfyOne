@@ -1,5 +1,5 @@
 """
-FastAPI application entry point for the Athena / Fitness AI Chatbot.
+FastAPI application entry point for the InfyOne / Infosys AI Chatbot.
 
 All configuration is sourced from .env via app.core.config.Settings.
 APP_HOST, APP_PORT, APP_ENV, APP_CORS_ORIGINS, APP_ALLOWED_HOSTS, etc. are read from .env.
@@ -45,8 +45,8 @@ async def lifespan(app: FastAPI):
         settings.APP_DEBUG,
     )
     logger.info(
-        "ChromaDB collection=%s metric=%s",
-        settings.CHROMA_COLLECTION_NAME,
+        "ChromaDB V2 collection=%s metric=%s",
+        settings.CHROMA_COLLECTION_V2,
         settings.CHROMA_DISTANCE_METRIC,
     )
 
@@ -55,12 +55,12 @@ async def lifespan(app: FastAPI):
     except Exception as exc:
         logger.warning("Redis unavailable at startup: %s — session memory will not work.", exc)
 
-    # Pre-warm the vector store connection
+    # Pre-warm the V2 Chroma connection
     try:
-        from app.rag.vectorstore import get_vectorstore
-        get_vectorstore()
+        from app.services.chromadb_service import get_chroma_service_v2
+        get_chroma_service_v2().get_collection()
     except Exception as exc:
-        logger.warning("ChromaDB pre-warm: %s", exc)
+        logger.warning("ChromaDB V2 pre-warm: %s", exc)
 
     logger.info(
         "Server ready at http://%s:%s",
@@ -158,13 +158,15 @@ async def health_check():
 
 # ── Direct run (python -m app.main) — reads APP_HOST/APP_PORT ────
 if __name__ == "__main__":
+    import os
     import uvicorn
 
     reload = settings.APP_ENV == "development"
+    port = int(os.environ.get("PORT", settings.effective_port))
     uvicorn.run(
         "app.main:app",
-        host=settings.APP_HOST,
-        port=settings.APP_PORT,
+        host="0.0.0.0",
+        port=port,
         reload=reload,
         log_level=settings.LOG_LEVEL.lower() if hasattr(settings, "LOG_LEVEL") else "info",
     )

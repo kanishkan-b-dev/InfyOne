@@ -6,7 +6,11 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class ChatRequest(BaseModel):
-    session_id: str = Field(..., min_length=1, max_length=128, description="Unique session identifier")
+    session_id: Optional[str] = Field(
+        default=None,
+        max_length=128,
+        description="Unique session identifier (optional, auto-generated if missing)",
+    )
     message: str = Field(..., min_length=1, max_length=2000, description="User message")
 
     @field_validator("message")
@@ -22,6 +26,9 @@ class SourceDoc(BaseModel):
     source: str
     page: Optional[int] = None
     chunk_index: Optional[int] = None
+    title: Optional[str] = None
+    category: Optional[str] = None
+    as_of: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -29,6 +36,8 @@ class ChatResponse(BaseModel):
     answer: str
     sources: list[SourceDoc] = []
     rewritten_query: Optional[str] = None
+    intent: Optional[str] = None
+    answering_node: Optional[str] = None
 
 
 class HealthResponse(BaseModel):

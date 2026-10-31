@@ -1,0 +1,64 @@
+services:
+  - type: web
+    name: infyone-ai-chatbot
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_NAME
+        value: "InfyOne"
+      - key: APP_ENV
+        value: "production"
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_HOST
+        value: "0.0.0.0"
+      - key: APP_ALLOWED_HOSTS
+        value: '["*"]'
+      - key: APP_CORS_ORIGINS
+        value: '["*"]'
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "60"
+      - key: OPENAI_MODEL
+        value: "gpt-4o-mini"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CHROMA_CLOUD_API_KEY
+        sync: false
+      - key: CHROMA_CLOUD_TENANT
+        sync: false
+      - key: CHROMA_CLOUD_DATABASE
+        sync: false
+      - key: CHROMA_TENANT
+        sync: false
+      - key: CHROMA_DATABASE
+        sync: false
+      - key: CHROMA_COLLECTION_NAME
+        value: "InfyOne"
+      - key: CHROMA_DISTANCE_METRIC
+        value: "cosine"
+      - key: EMBEDDING_PROVIDER
+        value: "openai"
+      - key: EMBEDDING_MODEL
+        value: "text-embedding-3-large"
+      - key: EMBEDDING_DIMENSION
+        value: "3072"
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: REDIS_SSL
+        value: "false"
+      - key: REDIS_DB
+        value: "0"
+      - key: LOG_LEVEL
+        value: "INFO"
+      - key: LOG_FORMAT
+        value: "json"
+

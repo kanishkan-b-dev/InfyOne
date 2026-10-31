@@ -4,19 +4,21 @@ Typed state object for the LangGraph chatbot workflow.
 from typing import Annotated, Optional
 from typing_extensions import TypedDict
 
+from langchain_core.messages import AnyMessage
+from langgraph.graph.message import add_messages
+
 
 class ChatState(TypedDict):
-    """Shared state passed between LangGraph nodes."""
+    """
+    Shared state for the LangGraph chat workflow.
+    - messages uses add_messages reducer so LangGraph checkpointer maintains full history.
+    """
 
-    session_id: str
-    question: str
-    chat_history: list[dict]          # [{role, content}, ...]
+    messages: Annotated[list[AnyMessage], add_messages]
+    intent: str
     rewritten_query: str
-    retrieved_documents: list          # list[Document]
-    context: str                       # formatted context string
+    category_filter: Optional[str]
+    documents: list[dict]
     answer: str
-    sources: list[dict]                # [{source, page, chunk_index}, ...]
-    is_relevant: bool                  # True if retrieved docs pass threshold
-    error: Optional[str]               # non-None when a node fails
-    messages: list                     # LangChain BaseMessage objects for the run
-    tool_calls: list                   # Recorded tool calls from orchestrator
+    sources: list[dict]
+    answering_node: str

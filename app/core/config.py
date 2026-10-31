@@ -20,22 +20,23 @@ if _ENV_FILE.exists():
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=_ENV_FILE if _ENV_FILE.exists() else ".env",
+        env_file=_ENV_FILE if _ENV_FILE.exists() else None,
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
     )
 
     # ── Application Settings ─────────────────────────────────────────────────
-    APP_NAME: str = "Athena Institute AI Assistant"
-    APP_ENV: str = "development"
-    APP_DEBUG: bool = True
+    APP_NAME: str = "InfyOne AI Assistant"
+    APP_ENV: str = "production"
+    APP_DEBUG: bool = False
     APP_VERSION: str = "1.0.0"
     APP_HOST: str = "0.0.0.0"
     APP_PORT: int = 8000
+    PORT: Optional[int] = None
     APP_SECRET_KEY: str = "0fc53de77df447e9dd462248fc90e50c48819fd73f0abd1c3883331cf3cedaf1"
-    APP_ALLOWED_HOSTS: Union[str, List[str]] = ["localhost", "127.0.0.1", "testserver"]
-    APP_CORS_ORIGINS: Union[str, List[str]] = ["http://localhost:3000", "http://localhost:8000"]
+    APP_ALLOWED_HOSTS: Union[str, List[str]] = ["*"]
+    APP_CORS_ORIGINS: Union[str, List[str]] = ["*"]
     RATE_LIMIT_PER_MINUTE: int = 60
 
     # ── Redis Cloud Settings ─────────────────────────────────────────────────
@@ -55,16 +56,16 @@ class Settings(BaseSettings):
     CHROMA_CLOUD_DATABASE: Optional[str] = None
     CHROMA_TENANT: Optional[str] = None
     CHROMA_DATABASE: Optional[str] = None
-    CHROMA_COLLECTION_NAME: str = "AthenaCollegeCollection"
-    CHROMA_COLLECTION_V2: str = "AthenaCollegeCollection_v2"
+    CHROMA_COLLECTION_NAME: str = "InfyOne"
+    CHROMA_COLLECTION_V2: str = "InfyOne"
     CHROMA_DISTANCE_METRIC: str = "cosine"
     CHROMA_PERSIST_DIRECTORY: str = "./chroma_data"
     CHROMA_MODE: Optional[str] = None
 
-    # ── Embedding Settings ───────────────────────────────────────────────────
+    # ── Embedding Settings (V2 Default: text-embedding-3-large 3072-dim) ─────
     EMBEDDING_PROVIDER: str = "openai"
-    EMBEDDING_MODEL: str = "text-embedding-3-small"
-    EMBEDDING_DIMENSION: int = 1536
+    EMBEDDING_MODEL: str = "text-embedding-3-large"
+    EMBEDDING_DIMENSION: int = 3072
     EMBEDDING_MODEL_V2: str = "text-embedding-3-large"
     EMBEDDING_DIMENSION_V2: int = 3072
     EMBEDDING_BATCH_SIZE: int = 100
@@ -141,8 +142,8 @@ class Settings(BaseSettings):
         return self.APP_HOST
 
     @property
-    def PORT(self) -> int:
-        return self.APP_PORT
+    def effective_port(self) -> int:
+        return self.PORT if self.PORT is not None else self.APP_PORT
 
     @property
     def ALLOWED_ORIGINS(self) -> List[str]:

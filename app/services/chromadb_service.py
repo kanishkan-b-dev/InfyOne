@@ -1,10 +1,10 @@
 """
 V2 ChromaDB Service.
-Manages Chroma Cloud connection and operations for AthenaCollegeCollection_v2.
+Manages Chroma Cloud connection and operations for InfyOne / Infosys collection.
 
 STRICT SAFETY POLICY:
-AthenaCollegeCollection is the V1 production/fallback collection and is protected.
-All destructive, clear, overwrite, or modification operations on AthenaCollegeCollection
+The legacy collection is protected.
+All destructive, clear, overwrite, or modification operations on legacy collections
 are strictly blocked and will raise a PermissionError.
 """
 import os
@@ -19,19 +19,19 @@ from chromadb.api.models.Collection import Collection
 logger = logging.getLogger(__name__)
 
 # ── Safety Configuration ─────────────────────────────────────────────────────
-PROTECTED_COLLECTION = "AthenaCollegeCollection"
-DEFAULT_V2_COLLECTION = "AthenaCollegeCollection_v2"
+PROTECTED_COLLECTION = os.getenv("CHROMA_PROTECTED_COLLECTION", "legacy_protected_collection")
+DEFAULT_V2_COLLECTION = "InfyOne"
 
 
 def assert_safe_collection(collection_name: str, operation: str = "modify") -> None:
     """
     Enforce safety check preventing any destructive or mutating operation
-    on the protected V1 production collection.
+    on the protected legacy production collection.
     """
-    if collection_name == PROTECTED_COLLECTION:
+    if collection_name and collection_name == PROTECTED_COLLECTION:
         raise PermissionError(
             f"CRITICAL SAFETY VIOLATION: Refusing to execute '{operation}' against protected "
-            f"collection '{PROTECTED_COLLECTION}'! V1 collection must remain completely untouched."
+            f"collection '{PROTECTED_COLLECTION}'! Legacy collection must remain completely untouched."
         )
 
 
@@ -47,6 +47,7 @@ class ChromaServiceV2:
     ):
         self.collection_name = (
             collection_name
+            or os.getenv("CHROMA_COLLECTION_NAME")
             or os.getenv("CHROMA_COLLECTION_V2")
             or DEFAULT_V2_COLLECTION
         )
@@ -123,7 +124,7 @@ class ChromaServiceV2:
     def reset_v2_collection_safely(self, confirm: bool = False) -> None:
         """
         Safely reset the V2 collection.
-        CANNOT be used on AthenaCollegeCollection under any circumstance.
+        CANNOT be used on protected legacy collection under any circumstance.
         """
         assert_safe_collection(self.collection_name, operation="reset_v2_collection")
 
@@ -153,7 +154,7 @@ class ChromaServiceV2:
         batch_size: int = 100,
     ) -> Tuple[int, int]:
         """
-        Idempotently ingest records into AthenaCollegeCollection_v2.
+        Idempotently ingest records into InfyOne collection.
 
         Returns:
             Tuple[int, int]: (inserted_count, updated_or_skipped_count)

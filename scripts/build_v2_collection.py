@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 """
-Build V2 ChromaDB Collection: AthenaCollegeCollection_v2.
+Build V2 ChromaDB Collection: InfyOne.
 
-Reads 92 knowledge-base records from chat-gpt.json, generates new 3072-dimensional
+Reads knowledge-base records, generates 3072-dimensional
 embeddings using OpenAI text-embedding-3-large, and idempotently populates
-AthenaCollegeCollection_v2 in Chroma Cloud.
-
-STRICT SAFETY:
-Never touches AthenaCollegeCollection (V1). Fails loudly on any mismatch.
+InfyOne in Chroma Cloud.
 """
 import argparse
 import json
@@ -94,7 +91,7 @@ def main():
     parser.add_argument(
         "--reset",
         action="store_true",
-        help="Reset and recreate AthenaCollegeCollection_v2 before ingestion (safe, will never touch V1)",
+        help="Reset and recreate collection before ingestion",
     )
     args = parser.parse_args()
 
@@ -103,7 +100,7 @@ def main():
     assert_safe_collection(target_collection, operation="build_v2_collection")
 
     print("\n" + "=" * 65)
-    print("      Athena Institute of Technology — V2 Collection Builder")
+    print("      InfyOne — V2 Collection Builder")
     print("=" * 65)
     print(f"Target Collection:   {target_collection}")
     print(f"Protected V1:        {PROTECTED_COLLECTION} (GUARANTEED UNTOUCHED)")
@@ -170,7 +167,7 @@ def main():
 
     logger.info("All %d embeddings generated successfully (dimension=%d).", len(embeddings), first_dim)
 
-    # ── 6. Ingest into AthenaCollegeCollection_v2 ────────────────────────────
+    # ── 6. Ingest into target collection ────────────────────────────
     logger.info("Ingesting records into Chroma collection '%s'...", target_collection)
     inserted, updated = chroma_svc.ingest_records(records, embeddings)
     logger.info("Ingestion result: %d inserted, %d updated.", inserted, updated)
@@ -259,7 +256,7 @@ def main():
         print(f"V1 Safety Check Note: {exc}")
 
     print("=" * 65)
-    print("  SUCCESS: AthenaCollegeCollection_v2 successfully built and verified!")
+    print("  SUCCESS: Collection successfully built and verified!")
     print("=" * 65 + "\n")
 
 
