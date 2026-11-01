@@ -39,6 +39,14 @@ class Settings(BaseSettings):
     APP_CORS_ORIGINS: Union[str, List[str]] = ["*"]
     RATE_LIMIT_PER_MINUTE: int = 60
 
+    # ── Authentication & Security Settings ──────────────────────────────────
+    AUTH_REQUIRED: bool = True
+    AUTH_USERS: Optional[str] = None  # JSON string e.g. {"admin": "Admin@123", ...}
+    AUTH_SESSION_EXPIRY_HOURS: int = 24
+    AUTH_MAX_LOGIN_ATTEMPTS: int = 5
+    AUTH_LOCKOUT_MINUTES: int = 5
+    AUTH_COOKIE_NAME: str = "infyone_session"
+
     # ── Redis Cloud Settings ─────────────────────────────────────────────────
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
@@ -156,6 +164,59 @@ class Settings(BaseSettings):
     @property
     def SIMILARITY_THRESHOLD(self) -> float:
         return self.KNOWLEDGE_SIMILARITY_THRESHOLD
+
+    def get_auth_users(self) -> dict:
+        """
+        Parse authorized users from environment variables / Key Vault.
+        Supports:
+        1. JSON in AUTH_USERS: '{"user1": "pass1", "user2": "pass2"}'
+        2. Individual variables: AUTH_USER_1="user1:pass1", AUTH_USER_2="user2:pass2"
+        3. USER_1_USERNAME / USER_1_PASSWORD pairs
+        4. Safe default 5 users if none configured yet.
+        """
+        import os
+        users = {}
+
+        # 1. Parse JSON if AUTH_USERS is set
+        if self.AUTH_USERS:
+            try:
+                raw = self.AUTH_USERS.strip()
+                parsed = json.loads(raw)
+                if isinstance(parsed, dict):
+                    for k, v in parsed.items():
+                        users[str(k).strip().lower()] = str(v)
+                elif isinstance(parsed, list):
+                    for item in parsed:
+                        if isinstance(item, dict) and "username" in item and "password" in item:
+                            users[str(item["username"]).strip().lower()] = str(item["password"])
+            except Exception:
+                pass
+
+        # 2. Check individual variables AUTH_USER_1 through AUTH_USER_10
+        for i in range(1, 11):
+            val = os.getenv(f"AUTH_USER_{i}")
+            if val and ":" in val:
+                u, p = val.split(":", 1)
+                users[u.strip().lower()] = p.strip()
+
+        # 3. Check USER_x_USERNAME / USER_x_PASSWORD
+        for i in range(1, 11):
+            u = os.getenv(f"USER_{i}_USERNAME")
+            p = os.getenv(f"USER_{i}_PASSWORD")
+            if u and p:
+                users[u.strip().lower()] = p.strip()
+
+        # 4. Default 5 authorized users if none configured in Key Vault
+        if not users:
+            users = {
+                "admin": "Infosys@2026!",
+                "manager": "InfyManager#1",
+                "developer": "Dev@Infy2026",
+                "analyst": "Analyst$Topaz9",
+                "executive": "Exec*InfyOne99",
+            }
+
+        return users
 
 
 @lru_cache()

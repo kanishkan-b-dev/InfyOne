@@ -5,8 +5,9 @@ import logging
 import time
 import uuid
 
-from fastapi import APIRouter, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
+from app.auth.dependencies import require_auth
 from app.chatbot.graph import run_chat
 from app.core.config import get_settings
 from app.core.logging import log_conversation
@@ -21,7 +22,7 @@ router = APIRouter()
 
 
 @router.post("/api/chat", response_model=ChatResponse, summary="Send a message to the chatbot")
-async def chat_endpoint(request: Request, body: ChatRequest):
+async def chat_endpoint(request: Request, body: ChatRequest, current_user: str = Depends(require_auth)):
     """
     Process a user message through the LangGraph conversational RAG pipeline.
     """

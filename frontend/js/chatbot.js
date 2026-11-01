@@ -186,6 +186,10 @@
       hideTyping();
 
       if (!res.ok) {
+        if (res.status === 401) {
+          window.location.href = '/login';
+          return;
+        }
         const err = await res.json().catch(() => ({}));
         appendMsg('ai', `**Error ${res.status}:** ${err.detail || 'Unexpected error from the knowledge server.'}`);
         return;
@@ -281,6 +285,36 @@
 
   // Defer moving typing row to end of feed on init
   if (typingRow) feed.appendChild(typingRow);
+
+  // ── Authentication Check & User Profile Chip ───────────────────────────
+  async function checkAuth() {
+    try {
+      const res = await fetch('/api/auth/me');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated && data.username) {
+          const userChip = document.getElementById('userChip');
+          const userNameDisplay = document.getElementById('userNameDisplay');
+          if (userChip && userNameDisplay) {
+            userNameDisplay.textContent = '👤 ' + data.username;
+            userChip.style.display = 'inline-flex';
+          }
+        }
+      }
+    } catch (_) {}
+  }
+  checkAuth();
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+      } finally {
+        window.location.href = '/login';
+      }
+    });
+  }
 
   console.info('%c⚡ Infosys AI%c · Linear design system · LangGraph + ChromaDB',
     'color:#7170ff;font-weight:700', 'color:#8a8f98;font-weight:400'

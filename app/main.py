@@ -13,10 +13,12 @@ from pathlib import Path
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.chat import router as chat_router
+from app.auth.dependencies import get_current_user
+from app.auth.routes import router as auth_router
 from app.core.config import get_settings
 from app.core.logging import setup_logging
 from app.memory.redis_manager import redis_manager
@@ -120,14 +122,41 @@ app.add_middleware(
 )
 
 # ── API Routers ──────────────────────────────────────────────────
+app.include_router(auth_router)
 app.include_router(chat_router)
 
 # ── Static Files & Frontend ─────────────────────────────────────
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 
+@app.get("/login", include_in_schema=False)
+async def login_page(request: Request):
+    """Serve the InfyOne Enterprise Login Portal."""
+    if getattr(settings, "AUTH_REQUIRED", True):
+        user = get_current_user(request)
+        if user:
+            return RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+
+    login_file = FRONTEND_DIR / "login.html"
+    if login_file.exists():
+        return FileResponse(
+            str(login_file),
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+            },
+        )
+    return JSONResponse(status_code=404, content={"detail": "login.html not found"})
+
 @app.get("/", include_in_schema=False)
-async def root():
+async def root(request: Request):
+    """Serve the main InfyOne Console (protected by authentication)."""
+    if getattr(settings, "AUTH_REQUIRED", True):
+        user = get_current_user(request)
+        if not user:
+            return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
+
     index_file = FRONTEND_DIR / "index.html"
     if index_file.exists():
         return FileResponse(
